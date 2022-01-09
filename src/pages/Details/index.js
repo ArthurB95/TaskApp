@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 
-import database from "../../config/firebaseconfig";
+import firebase from "../../config/firebaseconfig";
 import styles from "./style";
 
 const Details = ({ navigation, route }) => {
@@ -9,6 +9,7 @@ const Details = ({ navigation, route }) => {
     route.params.description
   );
   const idTask = route.params.id;
+  const database = firebase.firestore()
 
   function editTask(description, id) {
     database.collection("Tasks").doc(id).update({
