@@ -9,11 +9,11 @@ const Details = ({ navigation, route }) => {
     route.params.description
   );
   const idTask = route.params.id;
-  const database = firebase.firestore()
+  const database = firebase.firestore();
 
   function editTask(description, id) {
-    database.collection("Tasks").doc(id).update({
-      description: descriptionEdit,
+    database.collection(route.params.idUser).doc(id).update({
+      description: description,
     });
     navigation.navigate("Task");
   }

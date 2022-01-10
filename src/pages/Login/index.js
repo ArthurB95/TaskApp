@@ -16,12 +16,31 @@ import styles from "./style";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const [password, setPassword] = useState("");
   const [errorLogin, setErrorLogin] = useState("");
 
-  const loginFirebase = () => {};
+  const loginFirebase = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        let user = userCredential.user;
+        navigation.navigate("Task", { idUser: user.uid });
+      })
+      .catch((error) => {
+        setErrorLogin(true);
+        var errorCode = error.code;
+        var errorMessage = error.message;
+      });
+  };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate("Task", { idUser: user.uid });
+      }
+    });
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -41,8 +60,8 @@ export default function Login({ navigation }) {
         secureTextEntry={true}
         placeholder="Enter A Password"
         type="text"
-        onChangeText={(text) => setSenha(text)}
-        value={senha}
+        onChangeText={(text) => setPassword(text)}
+        value={password}
       />
       {errorLogin === true ? (
         <View style={styles.contentAlert}>
@@ -56,12 +75,12 @@ export default function Login({ navigation }) {
       ) : (
         <View />
       )}
-      {email === "" || senha === "" ? (
+      {email === "" || password === "" ? (
         <TouchableOpacity disabled={true} style={styles.buttonLogin}>
           <Text style={styles.textButtonLogin}>Login</Text>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={styles.buttonLogin}>
+        <TouchableOpacity style={styles.buttonLogin} onPress={loginFirebase}>
           <Text style={styles.textButtonLogin}>Login</Text>
         </TouchableOpacity>
       )}
@@ -74,6 +93,7 @@ export default function Login({ navigation }) {
           Subscribe Now..
         </Text>
       </Text>
+      <View style={{ height: 100 }} />
     </KeyboardAvoidingView>
   );
 }
